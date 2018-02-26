@@ -1,11 +1,18 @@
 import React, { Component } from "react";
-import { ActivityIndicator, ListView, Text, View, Button } from "react-native";
+import {
+	StyleSheet,
+	ActivityIndicator,
+	ListView,
+	Text,
+	View,
+	Button
+} from "react-native";
 import { StackNavigator, TabNavigator, TabBarBottom } from "react-navigation";
 import Ionicon from "react-native-vector-icons/Ionicons";
 
 export default class App extends Component {
 	render() {
-		return <TabNavigatorStack />;
+		return <TabNavigatorStack style={styles.nav} />;
 	}
 }
 
@@ -16,10 +23,6 @@ class Icon extends Component {
 }
 
 class ToursScreen extends Component {
-	static navigationOptions = {
-		title: "Tours"
-	};
-
 	render() {
 		return (
 			<View>
@@ -40,14 +43,66 @@ class ToursScreen extends Component {
 }
 
 class RentalsScreen extends Component {
-	static navigationOptions = {
-		title: "Rentals"
-	};
+	constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true,
+      isError: false,
+      error: null
+    }
+  }
 
-	render() {
-		return <Text>Rentals</Text>;
-	}
+  componentDidMount() {
+    return fetch('http://ghoomakad.atwebpages.com/ghoomakad/gh-clogs/make-rental-data.php')
+      .then((response) => response.json())
+      .then((responseJson) => {
+        let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.setState({
+          isLoading: false,
+          dataSource: ds.cloneWithRows(responseJson),
+        }, function() {
+          // do something with new state
+        });
+      })
+      .catch((error) => {
+        this.setState({
+        	isError : true,
+        	error: 'Seems like a Network Error occured.'
+        })
+      });
+  }
+
+  render() {
+    if (this.state.isLoading) {
+      return (
+        <View style={{flex: 1, paddingTop: 20}}>
+          <ActivityIndicator />
+        </View>
+      );
+    }
+    else if (this.state.isError) {
+    	return(
+    		<View>
+    			<Text> {this.state.error} </Text>
+    		</View>
+    	)
+    }
+    else {
+    	return (
+	      <View style={{flex: 1, paddingTop: 20}}>
+	        <ListView
+	          dataSource={this.state.dataSource}
+	          renderRow={(rowData) => <Text>{rowData.rentalName}, {rowData.rentalPrice}</Text>}
+	        />
+	      </View>
+    );
+
+    }
+
+  }
 }
+
+
 
 class TourModal extends Component {
 	render() {
@@ -96,22 +151,39 @@ const TabNavigatorStack = TabNavigator(
 				const { routeName } = navigation.state;
 				let iconName;
 				if (routeName === "Tours") {
-					iconName = `ios-information-circle${
-						focused ? "" : "-outline"
-					}`;
+					iconName = `ios-information-circle${focused ? "" : "-outline"}`;
 				} else if (routeName === "Rentals") {
 					iconName = `ios-options${focused ? "" : "-outline"}`;
 				}
-				return <Ionicon name={iconName} size={25} color={tintColor} />;
+				return <Ionicon name={iconName} size={30} color={tintColor} />;
 			}
 		}),
 		tabBarOptions: {
 			activeTintColor: "tomato",
-			inactiveTintColor: "gray"
+			inactiveTintColor: "gray",
+			labelStyle: {
+				/* tab label styles */
+				fontSize: 12,
+				paddingTop: 0,
+				letterSpacing: 1
+			},
+			tabStyle: {
+				/* tab styles */
+			},
+			style: {
+				/* tab bar styles */
+			}
 		},
 		tabBarComponent: TabBarBottom,
 		tabBarPosition: "bottom",
 		animationEnabled: false,
-		swipeEnabled: false
+		swipeEnabled: true,
+		lazy: true
 	}
 );
+
+const styles = StyleSheet.create({
+	nav: {
+		height: 300
+	}
+});
