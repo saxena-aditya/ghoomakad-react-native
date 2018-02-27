@@ -6,7 +6,8 @@ import {
 	Text,
 	View,
 	Button,
-	Image
+	Image, 
+	FlatList
 } from "react-native";
 import { StackNavigator, TabNavigator, TabBarBottom } from "react-navigation";
 import Ionicon from "react-native-vector-icons/Ionicons";
@@ -18,49 +19,112 @@ class Icon extends Component {
 }
 
 class ToursScreen extends Component {
+
+	constructor(props) {
+		super(props)
+		this.state = {
+		isError: false,
+		error: 'Seems like a Network Error Occured!',
+		isLoading: true
+	}
+	}
+
 	static navigationOptions = {
 		header: null
 	};
 
+	componentDidMount() {
+		return fetch(
+			"http://ghoomakad.atwebpages.com/ghoomakad/gh-clogs/make-tours-data.php"
+		)
+			.then(response => response.json())
+			.then(responseJson => {
+				let ds = new ListView.DataSource({
+					rowHasChanged: (r1, r2) => r1 !== r2
+				});
+				this.setState(
+					{
+						isLoading: false,
+						dataSource: ds.cloneWithRows(responseJson)
+					},
+					function() {
+						// do something with new state
+					}
+				);
+			})
+			.catch(error => {
+				this.setState({
+					isError: true,
+					error: "Seems like a Network Error occured."
+				});
+			});
+	}
+
 	render() {
-		return (
-			<View>
-				<Icon name="ios-add" />
-				<Text>Tours</Text>
-				<Button
-					title="Move"
-					onPress={() => {
-						this.props.navigation.navigate("TourDetails", {
-							itemId: 86,
-							other: "Rentals"
-						});
-					}}
-				/>
-			</View>
-		);
+		if (this.state.isLoading) {
+			return (
+				<View style={{ flex: 1, paddingTop: 20 }}>
+					<ActivityIndicator />
+				</View>
+			);
+		} else if (this.state.isError) {
+			return (
+				<View>
+					<Text> {this.state.error} </Text>
+				</View>
+			);
+		} else {
+			return (
+				<View style={{ flex: 1, padding: 10 }}>
+					<ListView
+						dataSource={this.state.dataSource}
+						renderRow={rowData => (
+							<TourWidget
+								isActive={rowData.isActive}
+								image={rowData.tourCoverImage}
+								price={rowData.id}
+								name={rowData.tourName}
+							/>
+						)}
+					/>
+				</View>
+			);
+		}
 	}
 }
 
+class TourWidget extends Component {
+	render() {
+		const base  = ""
+		return (
+			null
+		)
+	}
+}
 class RentalWidget extends Component {
 	render() {
 		const base =
-			"https://auto.ndtvimg.com/bike-images/colors/suzuki/intruder/suzuki-intruder-glass-sparkle-black.png";
+			"https://auto.ndtvimg.com/bike-images/colors/suzuki/intruder/suzuki-intruder-glass-sparkle-black.png"
 
-		return (
-			<View style={styles.container}>
-				<View style={styles.leftContainer}>
-					<Image style={styles.rentalImage} source={{ uri: base }} />
-				</View>
-				<View style={styles.rightContainerWithText}>
-					<View>
-						<Text style={styles.textUpper}>{this.props.name}</Text>
+		if (this.props.isActive == 1){
+			return (
+				<View style={styles.container}>
+					<View style={styles.leftContainer}>
+						<Image style={styles.rentalImage} source={{ uri: base }} />
 					</View>
-					<View>
-						<Text style={styles.textLower}>{this.props.price}</Text>
+					<View style={styles.rightContainerWithText}>
+						<View>
+							<Text style={styles.textUpper}>{this.props.name}</Text>
+						</View>
+						<View>
+							<Text style={styles.textLower}><Text style={styles.currency}>&#x20B9;</Text>{this.props.price}</Text>
+						</View>
 					</View>
 				</View>
-			</View>
-		);
+			);
+
+		}
+		return null
 	}
 }
 class RentalsScreen extends Component {
@@ -120,6 +184,7 @@ class RentalsScreen extends Component {
 						dataSource={this.state.dataSource}
 						renderRow={rowData => (
 							<RentalWidget
+								isActive={rowData.isActive}
 								image={rowData.rentalImage}
 								price={rowData.rentalPrice}
 								name={rowData.rentalName}
@@ -235,10 +300,13 @@ const styles = StyleSheet.create({
 		width: "100%"
 	},
 	textUpper: {
-		fontSize: 18
+		fontSize: 20
 	},
 	textLower: {
-		fontSize: 15
+		fontSize: 18
+	},
+	currency: {
+		fontSize:14
 	}
 });
 
