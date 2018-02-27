@@ -5,28 +5,27 @@ import {
 	ListView,
 	Text,
 	View,
-	Button
+	Button,
+	Image
 } from "react-native";
 import { StackNavigator, TabNavigator, TabBarBottom } from "react-navigation";
 import Ionicon from "react-native-vector-icons/Ionicons";
 
-export default class App extends Component {
-	render() {
-		return <TabNavigatorStack style={styles.nav} />;
-	}
-}
-
 class Icon extends Component {
 	render() {
-		return <Ionicon name="ios-add" size={30} color="#900" />;
+		return <Ionicon name={this.props.name} size={30} color="#900" />;
 	}
 }
 
 class ToursScreen extends Component {
+	static navigationOptions = {
+		header: null
+	};
+
 	render() {
 		return (
 			<View>
-				<Icon />
+				<Icon name="ios-add" />
 				<Text>Tours</Text>
 				<Button
 					title="Move"
@@ -42,67 +41,96 @@ class ToursScreen extends Component {
 	}
 }
 
+class RentalWidget extends Component {
+	render() {
+		const base =
+			"https://auto.ndtvimg.com/bike-images/colors/suzuki/intruder/suzuki-intruder-glass-sparkle-black.png";
+
+		return (
+			<View style={styles.container}>
+				<View style={styles.leftContainer}>
+					<Image style={styles.rentalImage} source={{ uri: base }} />
+				</View>
+				<View style={styles.rightContainerWithText}>
+					<View>
+						<Text style={styles.textUpper}>{this.props.name}</Text>
+					</View>
+					<View>
+						<Text style={styles.textLower}>{this.props.price}</Text>
+					</View>
+				</View>
+			</View>
+		);
+	}
+}
 class RentalsScreen extends Component {
 	constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: true,
-      isError: false,
-      error: null
-    }
-  }
+		super(props);
+		this.state = {
+			isLoading: true,
+			isError: false,
+			error: null
+		};
+	}
 
-  componentDidMount() {
-    return fetch('http://ghoomakad.atwebpages.com/ghoomakad/gh-clogs/make-rental-data.php')
-      .then((response) => response.json())
-      .then((responseJson) => {
-        let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.setState({
-          isLoading: false,
-          dataSource: ds.cloneWithRows(responseJson),
-        }, function() {
-          // do something with new state
-        });
-      })
-      .catch((error) => {
-        this.setState({
-        	isError : true,
-        	error: 'Seems like a Network Error occured.'
-        })
-      });
-  }
+	componentDidMount() {
+		return fetch(
+			"http://ghoomakad.atwebpages.com/ghoomakad/gh-clogs/make-rental-data.php"
+		)
+			.then(response => response.json())
+			.then(responseJson => {
+				let ds = new ListView.DataSource({
+					rowHasChanged: (r1, r2) => r1 !== r2
+				});
+				this.setState(
+					{
+						isLoading: false,
+						dataSource: ds.cloneWithRows(responseJson)
+					},
+					function() {
+						// do something with new state
+					}
+				);
+			})
+			.catch(error => {
+				this.setState({
+					isError: true,
+					error: "Seems like a Network Error occured."
+				});
+			});
+	}
 
-  render() {
-    if (this.state.isLoading) {
-      return (
-        <View style={{flex: 1, paddingTop: 20}}>
-          <ActivityIndicator />
-        </View>
-      );
-    }
-    else if (this.state.isError) {
-    	return(
-    		<View>
-    			<Text> {this.state.error} </Text>
-    		</View>
-    	)
-    }
-    else {
-    	return (
-	      <View style={{flex: 1, paddingTop: 20}}>
-	        <ListView
-	          dataSource={this.state.dataSource}
-	          renderRow={(rowData) => <Text>{rowData.rentalName}, {rowData.rentalPrice}</Text>}
-	        />
-	      </View>
-    );
-
-    }
-
-  }
+	render() {
+		if (this.state.isLoading) {
+			return (
+				<View style={{ flex: 1, paddingTop: 20 }}>
+					<ActivityIndicator />
+				</View>
+			);
+		} else if (this.state.isError) {
+			return (
+				<View>
+					<Text> {this.state.error} </Text>
+				</View>
+			);
+		} else {
+			return (
+				<View style={{ flex: 1, padding: 10 }}>
+					<ListView
+						dataSource={this.state.dataSource}
+						renderRow={rowData => (
+							<RentalWidget
+								image={rowData.rentalImage}
+								price={rowData.rentalPrice}
+								name={rowData.rentalName}
+							/>
+						)}
+					/>
+				</View>
+			);
+		}
+	}
 }
-
-
 
 class TourModal extends Component {
 	render() {
@@ -185,5 +213,37 @@ const TabNavigatorStack = TabNavigator(
 const styles = StyleSheet.create({
 	nav: {
 		height: 300
+	},
+	textElement: {
+		fontFamily: "Roboto",
+		fontSize: 18
+	},
+	container: {
+		flex: 1,
+		flexDirection: "row",
+		width: "100%",
+		marginBottom: 5
+	},
+	leftContainer: {
+		width: "30%"
+	},
+	rightContainerWithText: {
+		padding: 10
+	},
+	rentalImage: {
+		height: 70,
+		width: "100%"
+	},
+	textUpper: {
+		fontSize: 18
+	},
+	textLower: {
+		fontSize: 15
 	}
 });
+
+export default class App extends Component {
+	render() {
+		return <TabNavigatorStack style={styles.nav} />;
+	}
+}
