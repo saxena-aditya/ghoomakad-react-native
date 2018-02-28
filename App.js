@@ -7,10 +7,17 @@ import {
 	View,
 	Button,
 	Image, 
-	FlatList
+	FlatList,
+	ScrollView
 } from "react-native";
 import { StackNavigator, TabNavigator, TabBarBottom } from "react-navigation";
 import Ionicon from "react-native-vector-icons/Ionicons";
+import {
+  MKButton,
+  MKColor,
+  MKIconToggle,
+  getTheme,
+} from 'react-native-material-kit';
 
 class Icon extends Component {
 	render() {
@@ -25,7 +32,8 @@ class ToursScreen extends Component {
 		this.state = {
 		isError: false,
 		error: 'Seems like a Network Error Occured!',
-		isLoading: true
+		isLoading: true,
+		dataSource: {a: 'asd'}
 	}
 	}
 
@@ -33,7 +41,7 @@ class ToursScreen extends Component {
 		header: null
 	};
 
-	componentDidMount() {
+/*	componentDidMount() {
 		return fetch(
 			"http://ghoomakad.atwebpages.com/ghoomakad/gh-clogs/make-tours-data.php"
 		)
@@ -90,15 +98,66 @@ class ToursScreen extends Component {
 				</View>
 			);
 		}
+	}*/
+
+	render() {
+		return (
+		<View style={{ flex: 1}}>
+					<FlatList
+						data={[{key: 'a'}]}
+						renderItem={rowData => (
+							<TourWidget
+								isActive={rowData.isActive}
+								image={rowData.tourCoverImage}
+								price={rowData.id}
+								name={rowData.tourName}
+							/>
+						)}
+					/>
+				</View>
+		)
 	}
 }
 
 class TourWidget extends Component {
 	render() {
-		const base  = ""
-		return (
-			null
-		)
+		const base = "https://cdn1.tripoto.com/media/filter/nl/img/1/Image/1503640880_6641038395_baa15ebb33_n.jpg"
+		
+			var base64Icon = 'http://www.getmdl.io/assets/demos/welcome_card.jpg';
+    var action = (<Text> My action</Text>);
+    var menu = (
+       <MKIconToggle
+        checked={true}
+        onCheckedChange={this._onIconChecked}
+        onPress={this._onIconClicked}
+        >
+        <Text pointerEvents="none"
+              style={styles.toggleTextOff}>Off</Text>
+        <Text state_checked={true}
+              pointerEvents="none"
+              style={[styles.toggleText, styles.toggleTextOn]}>On</Text>
+      </MKIconToggle>
+    );
+    return (
+          <View style={theme.cardStyle}>
+            <Image source={{uri : base64Icon}} style={theme.cardImageStyle}/>
+            <Text style={theme.cardTitleStyle}>Welcome</Text>
+            <View  // TextView padding not handled well on Android https://github.com/facebook/react-native/issues/3233
+              style={{
+                padding : 15,
+              }}
+              >
+              <Text style={[theme.cardContentStyle, {padding:0}]}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Mauris sagittis pellentesque lacus eleifend lacinia...
+              </Text>
+            </View>
+            <View style={theme.cardMenuStyle}>{menu}</View>
+            <View style={theme.cardActionStyle}>
+              <Text>My Action</Text>
+            </View>
+          </View>
+       	)	
 	}
 }
 class RentalWidget extends Component {
@@ -275,6 +334,7 @@ const TabNavigatorStack = TabNavigator(
 	}
 );
 
+const theme = getTheme();
 const styles = StyleSheet.create({
 	nav: {
 		height: 300
@@ -307,6 +367,27 @@ const styles = StyleSheet.create({
 	},
 	currency: {
 		fontSize:14
+	},
+	tourHeaderContainer: {
+		height: 170,
+		width: '100%'
+	},
+	tourContainer: {
+		height: 150,
+		marginBottom: 5
+	},
+	tourImageContainer: {
+		height: '100%',
+		width: '100%',
+	},
+	tourImage: {
+		height: '100%',
+		width: '100%'
+	},
+	tourTextHeading: {
+		position: 'absolute',
+		bottom: 10,
+		left: 10
 	}
 });
 
