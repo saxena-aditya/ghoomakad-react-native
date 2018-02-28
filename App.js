@@ -8,7 +8,8 @@ import {
 	Button,
 	Image, 
 	FlatList,
-	ScrollView
+	ScrollView,
+	Alert
 } from "react-native";
 import { StackNavigator, TabNavigator, TabBarBottom } from "react-navigation";
 import Ionicon from "react-native-vector-icons/Ionicons";
@@ -111,6 +112,7 @@ class ToursScreen extends Component {
 								image={rowData.tourCoverImage}
 								price={rowData.id}
 								name={rowData.tourName}
+								navigate= {this.props.navigation}
 							/>
 						)}
 					/>
@@ -138,10 +140,21 @@ class TourWidget extends Component {
               style={[styles.toggleText, styles.toggleTextOn]}>On</Text>
       </MKIconToggle>
     );
+    const FlatButton = MKButton.coloredFlatButton()
+	  .withText('Tour Details')
+	  .withOnPress(() => {
+	  	this.props.navigate.navigate('TourDetails')
+	  })
+		.build();
+	const FlatButton2 = MKButton.coloredButton()
+	  .withText('Book')
+		.build();
+
     return (
-          <View style={theme.cardStyle}>
+    	<View>
+          <View style={[theme.cardStyle, {marginBottom: 5}]}>
             <Image source={{uri : base64Icon}} style={theme.cardImageStyle}/>
-            <Text style={theme.cardTitleStyle}>Welcome</Text>
+            <Text style={[theme.cardTitleStyle, {backgroundColor: 'purple', color: '#fff',maxWidth: '90%', fontSize: 20}]}>Rajasthan Awesome tour</Text>
             <View  // TextView padding not handled well on Android https://github.com/facebook/react-native/issues/3233
               style={{
                 padding : 15,
@@ -152,11 +165,30 @@ class TourWidget extends Component {
                 Mauris sagittis pellentesque lacus eleifend lacinia...
               </Text>
             </View>
-            <View style={theme.cardMenuStyle}>{menu}</View>
-            <View style={theme.cardActionStyle}>
-              <Text>My Action</Text>
+            <View style={[theme.cardActionStyle, styles.btnView]}>
+              <FlatButton  style={styles.detailBtn}/>
+              <FlatButton2  style={styles.detailBtn}/>
             </View>
           </View>
+           <View style={theme.cardStyle}>
+            <Image source={{uri : base}} style={theme.cardImageStyle}/>
+            <Text style={[theme.cardTitleStyle, {backgroundColor: 'purple', color: '#fff',maxWidth: '90%', fontSize: 20}]}>Rajasthan Awesome tour</Text>
+            <View  // TextView padding not handled well on Android https://github.com/facebook/react-native/issues/3233
+              style={{
+                padding : 15,
+              }}
+              >
+              <Text style={[theme.cardContentStyle, {padding:0}]}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Mauris sagittis pellentesque lacus eleifend lacinia...
+              </Text>
+            </View>
+            <View style={[theme.cardActionStyle, styles.btnView]}>
+              <FlatButton  style={styles.detailBtn}/>
+              <FlatButton2  style={styles.detailBtn}/>
+            </View>
+          </View>
+</View>
        	)	
 	}
 }
@@ -274,6 +306,7 @@ class TourModal extends Component {
 }
 
 class ToursDetailScreen extends Component {
+
 	render() {
 		return <Text>Tour Details Here!</Text>;
 	}
@@ -388,6 +421,17 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		bottom: 10,
 		left: 10
+	},
+	btnView: {
+		flex: 1,
+		flexDirection: 'row'
+	},
+	detailBtn: {
+		marginRight: 5,
+		paddingTop: 8,
+		paddingRight: 15,
+		paddingLeft:15,
+		paddingBottom: 8
 	}
 });
 
