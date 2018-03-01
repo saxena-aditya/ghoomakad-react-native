@@ -19,7 +19,7 @@ import {
 	MKIconToggle,
 	getTheme
 } from "react-native-material-kit";
-import Timeline from 'react-native-timeline-listview'
+import Timeline from "react-native-timeline-listview";
 
 class Icon extends Component {
 	render() {
@@ -42,19 +42,29 @@ class ToursScreen extends Component {
 		header: null
 	};
 
-	/*	componentDidMount() {
+	componentDidMount() {
 		return fetch(
 			"http://ghoomakad.atwebpages.com/ghoomakad/gh-clogs/make-tours-data.php"
 		)
 			.then(response => response.json())
 			.then(responseJson => {
-				let ds = new ListView.DataSource({
-					rowHasChanged: (r1, r2) => r1 !== r2
+				let data = [];
+				responseJson.forEach(item => {
+					let tour = {
+						id: item.id,
+						name: item.tourName,
+						description: item.tourSubText,
+						days: item.tourDuration,
+						image: item.tourCoverImage
+					};
+
+					data.push(tour);
 				});
+
 				this.setState(
 					{
 						isLoading: false,
-						dataSource: ds.cloneWithRows(responseJson)
+						dataSource: data
 					},
 					function() {
 						// do something with new state
@@ -84,23 +94,25 @@ class ToursScreen extends Component {
 			);
 		} else {
 			return (
-				<View style={{ flex: 1, padding: 10 }}>
-					<ListView
-						dataSource={this.state.dataSource}
-						renderRow={rowData => (
+				<View style={{ flex: 1 }}>
+					<FlatList
+						data={this.state.dataSource}
+						renderItem={rowData => (
 							<TourWidget
-								isActive={rowData.isActive}
-								image={rowData.tourCoverImage}
-								price={rowData.id}
-								name={rowData.tourName}
+								id={rowData.item.id}
+								image={rowData.item.image}
+								days={rowData.item.days}
+								name={rowData.item.name}
+								desc={rowData.item.description}
+								navigate={this.props.navigation}
 							/>
 						)}
 					/>
 				</View>
 			);
 		}
-	}*/
-
+	}
+	/*
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
@@ -118,110 +130,73 @@ class ToursScreen extends Component {
 				/>
 			</View>
 		);
-	}
+	}*/
 }
 
 class TourWidget extends Component {
 	render() {
+		console.log(this.props);
+
 		const base =
 			"https://cdn1.tripoto.com/media/filter/nl/img/1/Image/1503640880_6641038395_baa15ebb33_n.jpg";
 
 		var base64Icon = "http://www.getmdl.io/assets/demos/welcome_card.jpg";
-		var action = <Text> My action</Text>;
-		var menu = (
-			<MKIconToggle
-				checked={true}
-				onCheckedChange={this._onIconChecked}
-				onPress={this._onIconClicked}
-			>
-				<Text pointerEvents="none" style={styles.toggleTextOff}>
-					Off
-				</Text>
-				<Text
-					state_checked={true}
-					pointerEvents="none"
-					style={[styles.toggleText, styles.toggleTextOn]}
-				>
-					On
-				</Text>
-			</MKIconToggle>
-		);
 		const FlatButton = MKButton.coloredFlatButton()
 			.withText("Tour Details")
+			.withTextStyle({
+				color: "#0a7aad",
+				fontFamily: "Lato-Regular",
+				fontSize: 15
+			})
 			.withOnPress(() => {
 				this.props.navigate.navigate("TourDetails", {
-					id : 11
+					id: this.props.id
 				});
 			})
 			.build();
 		const FlatButton2 = MKButton.coloredButton()
 			.withText("Book")
+			.withTextStyle({
+				color: "#ffffff",
+				fontFamily: "Lato-Regular",
+				fontSize: 15
+			})
 			.build();
 
 		return (
-			<View>
-				<View style={[theme.cardStyle, { marginBottom: 5 }]}>
-					<Image
-						source={{ uri: base64Icon }}
-						style={theme.cardImageStyle}
-					/>
+			<View style={theme.cardStyle}>
+				<Image source={{ uri: base }} style={theme.cardImageStyle} />
+				<Text
+					style={[
+						theme.cardTitleStyle,
+						{
+							backgroundColor: "purple",
+							color: "#fff",
+							maxWidth: "90%",
+							fontSize: 20,
+							fontFamily: "Lato-Semibold"
+						}
+					]}
+				>
+					{this.props.name}
+				</Text>
+				<View // TextView padding not handled well on Android https://github.com/facebook/react-native/issues/3233
+					style={{
+						padding: 15
+					}}
+				>
 					<Text
 						style={[
-							theme.cardTitleStyle,
-							{
-								backgroundColor: "purple",
-								color: "#fff",
-								maxWidth: "90%",
-								fontSize: 20
-							}
+							theme.cardContentStyle,
+							{ padding: 0, fontFamily: "Lato-Regular" }
 						]}
 					>
-						Rajasthan Awesome tour
+						{this.props.desc}
 					</Text>
-					<View // TextView padding not handled well on Android https://github.com/facebook/react-native/issues/3233
-						style={{
-							padding: 15
-						}}
-					>
-						<Text style={[theme.cardContentStyle, { padding: 0 }]}>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-							Mauris sagittis pellentesque lacus eleifend lacinia...
-						</Text>
-					</View>
-					<View style={[theme.cardActionStyle, styles.btnView]}>
-						<FlatButton style={styles.detailBtn} />
-						<FlatButton2 style={styles.detailBtn} />
-					</View>
 				</View>
-				<View style={theme.cardStyle}>
-					<Image source={{ uri: base }} style={theme.cardImageStyle} />
-					<Text
-						style={[
-							theme.cardTitleStyle,
-							{
-								backgroundColor: "purple",
-								color: "#fff",
-								maxWidth: "90%",
-								fontSize: 20
-							}
-						]}
-					>
-						Rajasthan Awesome tour
-					</Text>
-					<View // TextView padding not handled well on Android https://github.com/facebook/react-native/issues/3233
-						style={{
-							padding: 15
-						}}
-					>
-						<Text style={[theme.cardContentStyle, { padding: 0 }]}>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-							Mauris sagittis pellentesque lacus eleifend lacinia...
-						</Text>
-					</View>
-					<View style={[theme.cardActionStyle, styles.btnView]}>
-						<FlatButton style={styles.detailBtn} />
-						<FlatButton2 style={styles.detailBtn} />
-					</View>
+				<View style={[theme.cardActionStyle, styles.btnView]}>
+					<FlatButton style={styles.detailBtn} />
+					<FlatButton2 style={styles.detailBtn} />
 				</View>
 			</View>
 		);
@@ -236,11 +211,16 @@ class RentalWidget extends Component {
 			return (
 				<View style={styles.container}>
 					<View style={styles.leftContainer}>
-						<Image style={styles.rentalImage} source={{ uri: base }} />
+						<Image
+							style={styles.rentalImage}
+							source={{ uri: base }}
+						/>
 					</View>
 					<View style={styles.rightContainerWithText}>
 						<View>
-							<Text style={styles.textUpper}>{this.props.name}</Text>
+							<Text style={styles.textUpper}>
+								{this.props.name}
+							</Text>
 						</View>
 						<View>
 							<Text style={styles.textLower}>
@@ -343,74 +323,88 @@ class TourModal extends Component {
 }
 
 class ToursDetailScreen extends Component {
-
+	static navigationOptions = {
+		title: "Tour Details"
+	};
 	constructor(props) {
-		super(props)
-		this.data = [
-	      {time: '09:00', title: 'Event 1', description: 'Event 1 Description'},
-	      {time: '10:45', title: 'Event 2', description: 'Event 2 Description'},
-	      {time: '12:00', title: 'Event 3', description: 'Event 3 Description'},
-	      {time: '14:00', title: 'Event 4', description: 'Event 4 Description'},
-	      {time: '16:30', title: 'Event 5', description: 'Event 5 Description'}
-      ]
-
-      this.state = {
-      	isError: false,
-      	isLoading: true,
-      }
+		super(props);
+		this.state = {
+			isError: false,
+			isLoading: true
+		};
 	}
 
 	componentDidMount() {
 		return fetch(
-			'http://ghoomakad.atwebpages.com/ghoomakad/gh-clogs/make-tour-day-data.php?id='+this.props.navigation.state.params.id
+			"http://ghoomakad.atwebpages.com/ghoomakad/gh-clogs/make-tour-day-data.php?id=" +
+				this.props.navigation.state.params.id
 		)
-		.then((response) => response.json())
-		.then((jsonResponse) => {
+			.then(response => response.json())
+			.then(jsonResponse => {
+				let dayData = [];
+				let i = 1;
 
-			let dayData = []
-			let i = 1;
-				
-			jsonResponse.forEach((item) => {
-				let day = {
-					time : 'Day-'+i,
-					title: item.dayDestination,
-					description: item.tourDayDetail
-				}
-				dayData.push(day)
-				i++
-			})
+				jsonResponse.forEach(item => {
+					let day = {
+						time: "Day-" + i,
+						title: item.dayDestination,
+						description: item.tourDayDetail
+					};
+					dayData.push(day);
+					i++;
+				});
 
-			this.setState({
-				isLoading: false,
-				data: dayData
+				this.setState({
+					isLoading: false,
+					data: dayData
+				});
+				console.log(this.state.data);
 			})
-					console.log(this.state.data)
-		})
-		.catch((error) => {
-			this.setState({
-				isError: true,
-				error: 'Seems like a Network Error Occured'
-			})
-		})	
+			.catch(error => {
+				this.setState({
+					isError: true,
+					error: "Seems like a Network Error Occured"
+				});
+			});
 	}
 	render() {
-		
 		if (this.state.isLoading) {
-			return (
-				<ActivityIndicator />
-			)
+			return <ActivityIndicator />;
 		}
 
-		 return (
-		
-      <View style={styles.container}>
-        <Timeline 
-          style={styles.list}
-          data={this.state.data}
-        />
-      </View>
-)
-;	}
+		return (
+			<View style={styles.container}>
+				<Timeline
+					style={styles.list}
+					data={this.state.data}
+					circleSize={20}
+					titleStyle={{ fontFamily: "Lato-Semibold" }}
+					circleColor="rgb(45,156,219)"
+					lineColor="rgb(45,156,219)"
+					timeContainerStyle={{
+						minWidth: 56,
+						marginTop: 5,
+						marginLeft: 5
+					}}
+					timeStyle={{
+						textAlign: "center",
+						backgroundColor: "#ff9797",
+						color: "white",
+						padding: 5,
+						borderRadius: 13
+					}}
+					descriptionStyle={{
+						color: "gray",
+						fontFamily: "Lato Light"
+					}}
+					innerCircle={"dot"}
+					options={{
+						style: { paddingTop: 5 }
+					}}
+				/>
+			</View>
+		);
+	}
 }
 
 const TourNavigatorStack = StackNavigator({
@@ -437,7 +431,9 @@ const TabNavigatorStack = TabNavigator(
 				const { routeName } = navigation.state;
 				let iconName;
 				if (routeName === "Tours") {
-					iconName = `ios-information-circle${focused ? "" : "-outline"}`;
+					iconName = `ios-information-circle${
+						focused ? "" : "-outline"
+					}`;
 				} else if (routeName === "Rentals") {
 					iconName = `ios-options${focused ? "" : "-outline"}`;
 				}
@@ -474,7 +470,7 @@ const styles = StyleSheet.create({
 		height: 300
 	},
 	textElement: {
-		fontFamily: "Roboto",
+		fontFamily: "Lato",
 		fontSize: 18
 	},
 	container: {
