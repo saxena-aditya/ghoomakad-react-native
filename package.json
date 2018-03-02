@@ -10,6 +10,7 @@
   "dependencies": {
     "react": "16.2.0",
     "react-native": "0.53.3",
+    "react-native-loader": "^1.2.1",
     "react-native-material-kit": "^0.5.1",
     "react-native-timeline-listview": "^0.2.2",
     "react-native-vector-icons": "^4.5.0",
@@ -26,6 +27,8 @@
     "preset": "react-native"
   },
   "rnpm": {
- "assets": ["assets/fonts/"]
-}
+    "assets": [
+      "assets/fonts/"
+    ]
+  }
 }

@@ -20,6 +20,7 @@ import {
 	getTheme
 } from "react-native-material-kit";
 import Timeline from "react-native-timeline-listview";
+import { Bars } from "react-native-loader";
 
 class Icon extends Component {
 	render() {
@@ -82,8 +83,8 @@ class ToursScreen extends Component {
 	render() {
 		if (this.state.isLoading) {
 			return (
-				<View style={{ flex: 1, paddingTop: 20 }}>
-					<ActivityIndicator />
+				<View style={styles.loaderView}>
+					<Bars size={20} color="e91e63" />
 				</View>
 			);
 		} else if (this.state.isError) {
@@ -135,8 +136,6 @@ class ToursScreen extends Component {
 
 class TourWidget extends Component {
 	render() {
-		console.log(this.props);
-
 		const base =
 			"https://cdn1.tripoto.com/media/filter/nl/img/1/Image/1503640880_6641038395_baa15ebb33_n.jpg";
 
@@ -150,31 +149,35 @@ class TourWidget extends Component {
 			})
 			.withOnPress(() => {
 				this.props.navigate.navigate("TourDetails", {
-					id: this.props.id
-				});
+					id: this.props.id,
+					name : this.props.name,
+					desc : this.props.desc
+			});
 			})
 			.build();
-		const FlatButton2 = MKButton.coloredButton()
+		const FlatButton2 = MKButton.accentColoredButton()
 			.withText("Book")
 			.withTextStyle({
 				color: "#ffffff",
 				fontFamily: "Lato-Regular",
 				fontSize: 15
 			})
+
 			.build();
 
 		return (
-			<View style={theme.cardStyle}>
+			<View style={[theme.cardStyle, { marginBottom: 10 }]}>
 				<Image source={{ uri: base }} style={theme.cardImageStyle} />
 				<Text
 					style={[
 						theme.cardTitleStyle,
 						{
-							backgroundColor: "purple",
+							backgroundColor: "#26619ced",
 							color: "#fff",
 							maxWidth: "90%",
 							fontSize: 20,
-							fontFamily: "Lato-Semibold"
+							fontFamily: "Lato-Regular",
+							fontWeight: "200"
 						}
 					]}
 				>
@@ -191,7 +194,7 @@ class TourWidget extends Component {
 							{ padding: 0, fontFamily: "Lato-Regular" }
 						]}
 					>
-						{this.props.desc}
+						{this.props.desc.substring(0, 150) + "[...]"}
 					</Text>
 				</View>
 				<View style={[theme.cardActionStyle, styles.btnView]}>
@@ -275,8 +278,8 @@ class RentalsScreen extends Component {
 	render() {
 		if (this.state.isLoading) {
 			return (
-				<View style={{ flex: 1, paddingTop: 20 }}>
-					<ActivityIndicator />
+				<View style={styles.loaderView}>
+					<Bars size={20} color="e91e63" />
 				</View>
 			);
 		} else if (this.state.isError) {
@@ -325,8 +328,9 @@ class TourModal extends Component {
 class ToursDetailScreen extends Component {
 	static navigationOptions = {
 		title: "Tour Details",
-		headerStyles: {
-			fontFamily: 'Lato-Semibold'
+		headerTitleStyle: {
+			fontWeight: "normal",
+			fontFamily: "Lato-Regular"
 		}
 	};
 	constructor(props) {
@@ -359,9 +363,9 @@ class ToursDetailScreen extends Component {
 
 				this.setState({
 					isLoading: false,
-					data: dayData
+					data: dayData,
+				
 				});
-				console.log(this.state.data);
 			})
 			.catch(error => {
 				this.setState({
@@ -372,16 +376,30 @@ class ToursDetailScreen extends Component {
 	}
 	render() {
 		if (this.state.isLoading) {
-			return <ActivityIndicator />;
+			return (
+				<View style={styles.loaderView}>
+					<Bars size={20} color="e91e63" />
+				</View>
+			);
 		}
-
 		return (
-			<View style={styles.container}>
+			<ScrollView>
+			<View style={[styles.container], {marginLeft: 5}}>
+			<View>
+			<Text style={styles.heading}>{this.props.navigation.state.params.name}</Text>
+			<Text style={styles.desc}>
+				{this.props.navigation.state.params.desc}
+			</Text>
+			</View>
 				<Timeline
 					style={styles.list}
 					data={this.state.data}
 					circleSize={20}
-					titleStyle={{ fontFamily: "Lato-Semibold" }}
+					titleStyle={{
+						fontFamily: "Lato-Semibold",
+						fontWeight: "normal",
+						color: "#000"
+					}}
 					circleColor="rgb(45,156,219)"
 					lineColor="rgb(45,156,219)"
 					timeContainerStyle={{
@@ -391,21 +409,23 @@ class ToursDetailScreen extends Component {
 					}}
 					timeStyle={{
 						textAlign: "center",
-						backgroundColor: "#ff9797",
+						backgroundColor: "#009e60",
 						color: "white",
 						padding: 5,
 						borderRadius: 13
 					}}
 					descriptionStyle={{
-						color: "gray",
+						color: "#6d6262",
+						fontWeight: "normal",
 						fontFamily: "Lato Light"
 					}}
 					innerCircle={"dot"}
 					options={{
-						style: { paddingTop: 5 }
+						style: { paddingTop: 10 }
 					}}
 				/>
 			</View>
+			</ScrollView>
 		);
 	}
 }
@@ -444,13 +464,15 @@ const TabNavigatorStack = TabNavigator(
 			}
 		}),
 		tabBarOptions: {
-			activeTintColor: "tomato",
+			activeTintColor: "#e91e63",
 			inactiveTintColor: "gray",
 			labelStyle: {
 				/* tab label styles */
 				fontSize: 12,
 				paddingTop: 0,
-				letterSpacing: 1
+				letterSpacing: 1,
+				fontFamily: 'Lato Light',
+				fontWeight: 'bold'
 			},
 			tabStyle: {
 				/* tab styles */
@@ -478,7 +500,6 @@ const styles = StyleSheet.create({
 	},
 	container: {
 		flex: 1,
-		flexDirection: "row",
 		width: "100%",
 		marginBottom: 5
 	},
@@ -532,7 +553,32 @@ const styles = StyleSheet.create({
 		paddingRight: 15,
 		paddingLeft: 15,
 		paddingBottom: 8
+	},
+	loaderView: {
+		flex: 1,
+		paddingTop: "50%",
+		backgroundColor: "#fff",
+		alignItems: "center"
+	},
+	heading: {
+		paddingTop: 16,
+		paddingLeft: 5,
+		fontSize: 25,
+		color: '#000',
+		fontFamily: 'Lato-Regular',
+		fontWeight: 'normal'
+	},
+	desc: {
+		paddingBottom: 10,
+		paddingLeft: 5,
+		paddingRight: 10,
+		paddingTop: 5,
+		color: '#6d6262',
+		fontSize: 15,
+		fontFamily: 'Lato-Regular',
+		fontWeight: '300'
 	}
+
 });
 
 export default class App extends Component {
