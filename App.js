@@ -324,7 +324,10 @@ class TourModal extends Component {
 
 class ToursDetailScreen extends Component {
 	static navigationOptions = {
-		title: "Tour Details"
+		title: "Tour Details",
+		headerStyles: {
+			fontFamily: 'Lato-Semibold'
+		}
 	};
 	constructor(props) {
 		super(props);
