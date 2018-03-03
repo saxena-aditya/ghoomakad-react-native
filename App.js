@@ -22,6 +22,7 @@ import {
 import Timeline from "react-native-timeline-listview";
 import { Bars } from "react-native-loader";
 
+
 class Icon extends Component {
 	render() {
 		return <Ionicon name={this.props.name} size={30} color="#900" />;
@@ -212,27 +213,40 @@ class RentalWidget extends Component {
 
 		if (this.props.isActive == 1) {
 			return (
-				<View style={styles.container}>
-					<View style={styles.leftContainer}>
-						<Image
-							style={styles.rentalImage}
-							source={{ uri: base }}
-						/>
-					</View>
-					<View style={styles.rightContainerWithText}>
-						<View>
-							<Text style={styles.textUpper}>
-								{this.props.name}
-							</Text>
-						</View>
-						<View>
-							<Text style={styles.textLower}>
-								<Text style={styles.currency}>&#x20B9;</Text>
-								{this.props.price}
-							</Text>
-						</View>
-					</View>
+				<View style={[theme.cardStyle, { marginBottom: 10 }]}>
+				<Image source={{ uri: base }} style={theme.cardImageStyle} />
+				<Text
+					style={[
+						theme.cardTitleStyle,
+						{
+							backgroundColor: "#ffffffbe",
+							color: "#000",
+							maxWidth: "90%",
+							fontSize: 20,
+							fontFamily: "Lato-Regular",
+							fontWeight: "300"
+						}
+					]}
+				>
+					{this.props.name}
+				</Text>
+				<View // TextView padding not handled well on Android https://github.com/facebook/react-native/issues/3233
+					style={{
+						padding: 15
+					}}
+				>
+					<Text
+						style={[
+							theme.cardContentStyle,
+							{ padding: 0, fontFamily: "Lato-Regular", fontSize: 25 }
+						]}
+					>
+						<Text
+							style={{fontSize: 20, marginRight: 10}}
+						>&#8377;</Text>{this.props.price + "/-"}
+					</Text>
 				</View>
+			</View>
 			);
 		}
 		return null;
@@ -302,6 +316,9 @@ class RentalsScreen extends Component {
 							/>
 						)}
 					/>
+					<Text
+						style={{fontFamily:'Lato-Regular', fontSize:15, color:'#000'}}
+					>**All the prices mentioned above are on per-day basic.</Text>
 				</View>
 			);
 		}
@@ -471,8 +488,8 @@ const TabNavigatorStack = TabNavigator(
 				fontSize: 12,
 				paddingTop: 0,
 				letterSpacing: 1,
-				fontFamily: 'Lato Light',
-				fontWeight: 'bold'
+				fontFamily: 'Lato-Regular',
+				fontWeight: '400'
 			},
 			tabStyle: {
 				/* tab styles */
@@ -502,6 +519,11 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: "100%",
 		marginBottom: 5
+	},
+	rentalContainer: {
+		flex: 1,
+		width: '100%',
+		flexDirection:'row'
 	},
 	leftContainer: {
 		width: "30%"
