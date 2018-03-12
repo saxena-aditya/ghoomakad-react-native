@@ -11,3 +11,4 @@ The fetched data is in (quite obvious) JSON format which is then ultimately mani
 ### About the future
 
 Next, we are going to improve the user experience for this app. A new home screen will be added that is going to display information about the company. Information may include, company's agenda and logo. At the time, only text-based details are shown in the Tour-Details Screen, we intend to brighten things up by adding some images and making the screen look more attractive. A new slider for each tour is going to be implemented on the Tour-Details screen which shall showcase the images for that particular tour. 
+Also, a new quick booking feature is going to be added, which will allow users to books tours from the app.
