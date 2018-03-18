@@ -9,3 +9,4 @@ React Native App for Ghoomakad Pvt. Ltd.
 * `$ react-native run-android`
 
 **Note:** Make sure that you have your android device attached with USB debugging enabled or have a working Emulator installed.
+

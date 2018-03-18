@@ -9,7 +9,8 @@ import {
    Image,
    FlatList,
    ScrollView,
-   Alert
+   Alert,
+    TouchableHighlight,
 } from "react-native";
 import { StackNavigator, TabNavigator, TabBarBottom } from "react-navigation";
 import Ionicon from "react-native-vector-icons/Ionicons";
@@ -21,7 +22,7 @@ import {
 } from "react-native-material-kit";
 import Timeline from "react-native-timeline-listview";
 import { Bars } from "react-native-loader";
-
+import ImageSlider from "react-native-image-slider";
 
 class Icon extends Component {
    render() {
@@ -151,9 +152,9 @@ class TourWidget extends Component {
          .withOnPress(() => {
             this.props.navigate.navigate("TourDetails", {
                id: this.props.id,
-               name : this.props.name,
-               desc : this.props.desc
-         });
+               name: this.props.name,
+               desc: this.props.desc
+            });
          })
          .build();
       const FlatButton2 = MKButton.accentColoredButton()
@@ -214,39 +215,40 @@ class RentalWidget extends Component {
       if (this.props.isActive == 1) {
          return (
             <View style={[theme.cardStyle, { marginBottom: 10 }]}>
-            <Image source={{ uri: base }} style={theme.cardImageStyle} />
-            <Text
-               style={[
-                  theme.cardTitleStyle,
-                  {
-                     backgroundColor: "#ffffffbe",
-                     color: "#000",
-                     maxWidth: "90%",
-                     fontSize: 20,
-                     fontFamily: "Lato-Regular",
-                     fontWeight: "300"
-                  }
-               ]}
-            >
-               {this.props.name}
-            </Text>
-            <View // TextView padding not handled well on Android https://github.com/facebook/react-native/issues/3233
-               style={{
-                  padding: 15
-               }}
-            >
+               <Image source={{ uri: base }} style={theme.cardImageStyle} />
                <Text
                   style={[
-                     theme.cardContentStyle,
-                     { padding: 0, fontFamily: "Lato-Regular", fontSize: 25 }
+                     theme.cardTitleStyle,
+                     {
+                        backgroundColor: "#ffffffbe",
+                        color: "#000",
+                        maxWidth: "90%",
+                        fontSize: 20,
+                        fontFamily: "Lato-Regular",
+                        fontWeight: "300"
+                     }
                   ]}
                >
-                  <Text
-                     style={{fontSize: 20, marginRight: 10}}
-                  >&#8377;</Text>{this.props.price + "/-"}
+                  {this.props.name}
                </Text>
+               <View // TextView padding not handled well on Android https://github.com/facebook/react-native/issues/3233
+                  style={{
+                     padding: 15
+                  }}
+               >
+                  <Text
+                     style={[
+                        theme.cardContentStyle,
+                        { padding: 0, fontFamily: "Lato-Regular", fontSize: 25 }
+                     ]}
+                  >
+                     <Text style={{ fontSize: 20, marginRight: 10 }}>
+                        &#8377;
+                     </Text>
+                     {this.props.price + "/-"}
+                  </Text>
+               </View>
             </View>
-         </View>
          );
       }
       return null;
@@ -317,8 +319,14 @@ class RentalsScreen extends Component {
                   )}
                />
                <Text
-                  style={{fontFamily:'Lato-Regular', fontSize:15, color:'#000'}}
-               >**All the prices mentioned above are on per-day basic.</Text>
+                  style={{
+                     fontFamily: "Lato-Regular",
+                     fontSize: 15,
+                     color: "#000"
+                  }}
+               >
+                  **All the prices mentioned above are on per-day basic.
+               </Text>
             </View>
          );
       }
@@ -380,8 +388,7 @@ class ToursDetailScreen extends Component {
 
             this.setState({
                isLoading: false,
-               data: dayData,
-            
+               data: dayData
             });
          })
          .catch(error => {
@@ -401,52 +408,96 @@ class ToursDetailScreen extends Component {
       }
       return (
          <ScrollView>
-         <View style={[styles.container], {marginLeft: 5}}>
-         <View>
-         <Text style={styles.heading}>{this.props.navigation.state.params.name}</Text>
-         <Text style={styles.desc}>
-            {this.props.navigation.state.params.desc}
-         </Text>
-         </View>
-            <Timeline
-               style={styles.list}
-               data={this.state.data}
-               circleSize={20}
-               titleStyle={{
-                  fontFamily: "Lato-Semibold",
-                  fontWeight: "normal",
-                  color: "#000"
-               }}
-               circleColor="rgb(45,156,219)"
-               lineColor="rgb(45,156,219)"
-               timeContainerStyle={{
-                  minWidth: 56,
-                  marginTop: 5,
-                  marginLeft: 5
-               }}
-               timeStyle={{
-                  textAlign: "center",
-                  backgroundColor: "#009e60",
-                  color: "white",
-                  padding: 5,
-                  borderRadius: 13
-               }}
-               descriptionStyle={{
-                  color: "#6d6262",
-                  fontWeight: "normal",
-                  fontFamily: "Lato Light"
-               }}
-               innerCircle={"dot"}
-               options={{
-                  style: { paddingTop: 10 }
-               }}
-            />
-         </View>
+            <View style={([styles.container], { marginLeft: 5 })}>
+               <View>
+                  <Text style={styles.heading}>
+                     {this.props.navigation.state.params.name}
+                  </Text>
+                  <Text style={styles.desc}>
+                     {this.props.navigation.state.params.desc}
+                  </Text>
+               </View>
+               <Timeline
+                  style={styles.list}
+                  data={this.state.data}
+                  circleSize={20}
+                  titleStyle={{
+                     fontFamily: "Lato-Semibold",
+                     fontWeight: "normal",
+                     color: "#000"
+                  }}
+                  circleColor="rgb(45,156,219)"
+                  lineColor="rgb(45,156,219)"
+                  timeContainerStyle={{
+                     minWidth: 56,
+                     marginTop: 5,
+                     marginLeft: 5
+                  }}
+                  timeStyle={{
+                     textAlign: "center",
+                     backgroundColor: "#009e60",
+                     color: "white",
+                     padding: 5,
+                     borderRadius: 13
+                  }}
+                  descriptionStyle={{
+                     color: "#6d6262",
+                     fontWeight: "normal",
+                     fontFamily: "Lato Light"
+                  }}
+                  innerCircle={"dot"}
+                  options={{
+                     style: { paddingTop: 10 }
+                  }}
+               />
+            </View>
          </ScrollView>
       );
    }
 }
 
+class ExperimentScreen extends Component {
+   render() {
+    const images = [
+      'https://cdn1.tripoto.com/media/filter/nl/img/1/Image/1503640880_6641038395_baa15ebb33_n.jpg',
+      'https://placeimg.com/640/640/people',
+      'https://placeimg.com/640/640/animals',
+'https://placeimg.com/640/640/beer',
+    ];
+
+    return (
+      <View style={styles.container}>
+       
+        <ImageSlider
+          loop
+          autoPlayWithInterval={3000}
+          images={images}
+          onPress={({ index }) => alert(index)}
+          customSlide={({ index, item, style, width }) => (
+            // It's important to put style here because it's got offset inside
+            <View
+              key={index}
+              style={[
+                style,
+                styles.customSlide,
+                { backgroundColor: index % 2 === 0 ? 'yellow' : 'green' },
+              ]}
+            >
+              <Image source={{ uri: item }} style={styles.customImage} />
+            </View>
+          )}
+         
+        />
+      </View>
+    );
+}
+}
+
+class ContactScreen extends Component {
+   render() {
+      return <Text>Contact Information</Text>;
+   }
+}
 const TourNavigatorStack = StackNavigator({
    Tours: {
       screen: ToursScreen
@@ -458,11 +509,17 @@ const TourNavigatorStack = StackNavigator({
 
 const TabNavigatorStack = TabNavigator(
    {
+      Experiment: {
+         screen: ExperimentScreen
+      },
       Tours: {
          screen: TourNavigatorStack
       },
       Rentals: {
          screen: RentalsScreen
+      },
+      Contact: {
+         screen: ContactScreen
       }
    },
    {
@@ -471,10 +528,10 @@ const TabNavigatorStack = TabNavigator(
             const { routeName } = navigation.state;
             let iconName;
             if (routeName === "Tours") {
-               iconName = `ios-information-circle${
-                  focused ? "" : "-outline"
-               }`;
+               iconName = `ios-information-circle${focused ? "" : "-outline"}`;
             } else if (routeName === "Rentals") {
+               iconName = `ios-options${focused ? "" : "-outline"}`;
+            } else if (routeName == "Contact") {
                iconName = `ios-options${focused ? "" : "-outline"}`;
             }
             return <Ionicon name={iconName} size={30} color={tintColor} />;
@@ -488,8 +545,8 @@ const TabNavigatorStack = TabNavigator(
             fontSize: 12,
             paddingTop: 0,
             letterSpacing: 1,
-            fontFamily: 'Lato-Regular',
-            fontWeight: '400'
+            fontFamily: "Lato-Regular",
+            fontWeight: "400"
          },
          tabStyle: {
             /* tab styles */
@@ -520,10 +577,13 @@ const styles = StyleSheet.create({
       width: "100%",
       marginBottom: 5
    },
+   customBtn: {
+      bottom: '10%',
+   },
    rentalContainer: {
       flex: 1,
-      width: '100%',
-      flexDirection:'row'
+      width: "100%",
+      flexDirection: "row"
    },
    leftContainer: {
       width: "30%"
@@ -586,21 +646,72 @@ const styles = StyleSheet.create({
       paddingTop: 16,
       paddingLeft: 5,
       fontSize: 25,
-      color: '#000',
-      fontFamily: 'Lato-Regular',
-      fontWeight: 'normal'
+      color: "#000",
+      fontFamily: "Lato-Regular",
+      fontWeight: "normal"
    },
    desc: {
       paddingBottom: 10,
       paddingLeft: 5,
       paddingRight: 10,
       paddingTop: 5,
-      color: '#6d6262',
+      color: "#6d6262",
       fontSize: 15,
-      fontFamily: 'Lato-Regular',
-      fontWeight: '300'
-   }
-
+      fontFamily: "Lato-Regular",
+      fontWeight: "300"
+   },
+   container: {
+    flex: 1,
+    backgroundColor: '#F5FCFF',
+  },
+  slider: { backgroundColor: '#000', height: 350 },
+  content1: {
+    width: '100%',
+    height: 50,
+    marginBottom: 10,
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  content2: {
+    width: '100%',
+    height: 100,
+    marginTop: 10,
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  contentText: { color: '#fff' },
+  buttons: {
+    zIndex: 1,
+    height: 15,
+    marginTop: -25,
+    marginBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  button: {
+    margin: 3,
+    width: 15,
+    height: 15,
+    opacity: 0.9,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonSelected: {
+    opacity: 1,
+    color: 'red',
+  },
+  customSlide: {
+    backgroundColor: 'green',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  customImage: {
+    width: '100%',
+    height: '100%',
+  },
 });
 
 export default class App extends Component {
