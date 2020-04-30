@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "devtools": "react-devtools"
+    "devtools": "react-devtools",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "dependencies": {
     "react": "16.2.0",
@@ -16,7 +18,8 @@
     "react-native-material-kit": "^0.5.1",
     "react-native-timeline-listview": "^0.2.2",
     "react-native-vector-icons": "^4.5.0",
-    "react-navigation": "^1.1.2"
+    "react-navigation": "^1.1.2",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "babel-jest": "22.4.1",
@@ -32,5 +35,6 @@
     "assets": [
       "assets/fonts/"
     ]
-  }
+  },
+  "snyk": true
 }
