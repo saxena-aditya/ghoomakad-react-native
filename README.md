@@ -3,7 +3,7 @@ React Native App for Ghoomakad Pvt. Ltd.
 
 ### Steps to produce: 
 
-* `$ git clone https://github.com/AdiUser/React-Native-App.git`
+* `$ git clone https://github.com/AdiUser/ghoomakad-react-native.git`
 * `$ cd React-Native-App`
 * `$ npm install`
 * `$ react-native run-android`
